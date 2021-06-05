@@ -1,0 +1,7 @@
+#Model names might change in the future
+#It's better to store these models locally for any further pretraining in the future
+model_name_ar: 'moha/arabert_c19'
+model_name_en: 'bert-base-uncased'
+seed: 99
+
+ALLOWED_LANGS: ['ar', 'en']
