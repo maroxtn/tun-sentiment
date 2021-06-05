@@ -13,6 +13,10 @@
 
    Note: Doesn't pad sentences because data collator will pad them later on
 """
+
+import re
+
+
 def preprocessing_for_bert(data, tokenizer, preprocess_text, max_len=256):
 
     input_ids = []
