@@ -2,8 +2,16 @@ __pycache__\
 .ipynb_checkpoints\
 .vscode\
 
+__pycache__\*
+.ipynb_checkpoints\*
+.vscode\*
+
+
 models\__pycache__\
+models\__pycache__\*
 
 dataloader\__pycache__\
+dataloader\__pycache__\*
 
 utils\__pycache__\
+utils\__pycache__\*
