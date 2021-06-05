@@ -9,7 +9,7 @@ import torch.nn.functional as F
 from torch.utils.data import TensorDataset, DataLoader, Dataset, Sampler, SequentialSampler
 from transformers import AutoTokenizer, AutoModel
 
-from utils import preprocessing_for_bert, get_indices
+from utils import preprocessing_for_bert
 from .bert_classifier import BertClassifier
 from dataloader import BertDataset, data_collator, KSampler
 from set_seed import set_seed
