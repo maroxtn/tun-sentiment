@@ -140,7 +140,7 @@ class SentimentInfer:
         """Performs inference of a list of phrases
         """
 
-        preds = self.bert_ensemble_predict(self, text, self.models, self.tokenizer, self.preprocess_function)
+        preds = self.bert_ensemble_predict(text, self.models, self.tokenizer, self.preprocess_function)
         out_sum = preds[0]
         for i in range(1,self.folds):
             out_sum = preds[i] + out_sum
