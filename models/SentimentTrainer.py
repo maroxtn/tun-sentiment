@@ -91,12 +91,12 @@ class SentimentTrainer():
 
         assert checkpoint_folder in os.listdir() , f"Checkpoint folder :{checkpoint_folder}/ doesn't exist"
         assert lang in ALLOWED_LANGS, "Language should exist in config.yaml"
-
+        
         if not cpu:
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
             self.device = "cpu"
-
+        print(self.device)
         #Load model name for the specified language from config yaml file
         model_names = yaml.load(open("model_names.yaml"), Loader=yaml.FullLoader)
         self.model_name = model_names["model_name_" + lang]

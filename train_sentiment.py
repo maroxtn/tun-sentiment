@@ -67,6 +67,7 @@ def main():
                     ,dropout=args.dropout, n_epochs=args.epochs, lr=args.lr, evaluate_step=args.evaluate_every
                     ,checkpoint_folder=args.save_folder, log_every=args.log_every)
 
+    print("hey models")
     losses = models.train_all()
     logging.info("\n".join([f"Fold {i} , Loss {val}" for i, val in enumerate(losses)]))
 
