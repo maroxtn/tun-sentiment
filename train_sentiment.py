@@ -61,7 +61,7 @@ def main():
         text = train.text
     else:
         fn = lambda x: x
-        text = train.converted
+        text = train.text_arabic
 
     models = SentimentTrainer(text, train.label, fn, args.lang_prefix, args.folds, args.batch_size
                     ,dropout=args.dropout, n_epochs=args.epochs, lr=args.lr, evaluate_step=args.evaluate_every

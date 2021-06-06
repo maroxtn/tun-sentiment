@@ -46,7 +46,7 @@ def main():
     arInfer = SentimentInfer(folds=args.en_folds, preprocess_function=lambda x:x, lang_prefix="ar")
 
     probs_en = enInfer.infer(test["text"], return_probs=True)
-    probs_ar = arInfer.infer(test["converted"], return_probs=True)
+    probs_ar = arInfer.infer(test["text_arabic"], return_probs=True)
 
     probs = probs_en+probs_ar*1.30
     predictedLabels = SentimentInfer.Probs2Values(probs)
