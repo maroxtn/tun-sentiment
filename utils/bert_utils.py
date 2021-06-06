@@ -1,3 +1,8 @@
+import re
+import os
+
+import pandas as pd
+
 """Get sentences ready for bert: Tokenize them, add special tokens
    Create mask and return in the form of a list
 
@@ -13,9 +18,6 @@
 
    Note: Doesn't pad sentences because data collator will pad them later on
 """
-
-import re
-
 
 def preprocessing_for_bert(data, tokenizer, preprocess_text, max_len=256):
 
@@ -62,3 +64,25 @@ def en_bert_preprocess(text):
     text = re.sub(r'([a-g-i-z][a-g-i-z])\1+', r'\1', text)
         
     return text
+
+
+
+"""Load the sentiment analysis dataset in Pandas dataframe format
+"""
+def load_sentiment_dataset(directory="data/external/sentiment_analysis/", interim=False):
+
+    if not interim:
+
+        train = pd.read_csv(os.path.join(directory, "Train.csv"))
+        test = pd.read_csv(os.path.join(directory, "Test.csv"))
+
+        return train, test
+
+    else:
+
+        directory = directory.replace("eexternal", "interim")
+
+        train = pd.read_csv(os.path.join(directory, "Train.csv"))
+        test = pd.read_csv(os.path.join(directory, "Test.csv"))
+
+        return train, test  

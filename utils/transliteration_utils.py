@@ -3,9 +3,9 @@ import os
 
 """Loads the transliteration dataset
 """
-def load_transliteration_dataset():
+def load_transliteration_dataset(dataset_dir="data/external/transliteration"):
 
-    dataset = pd.read_csv("data/external/transliteration/dataset.csv")
+    dataset = pd.read_csv(os.path.join(dataset_dir, "dataset.csv"))
 
     known = dataset[dataset.from_source == True]
     dataset = dataset[["arabizi", "arabic", "from_source"]]

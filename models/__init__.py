@@ -1,3 +1,3 @@
-from .transliteration_model import TransliterationModel
-from .sentiment_infer import SentimentInfer
-from .train_sentiment import SentimentTrainer
+from .TransliterationModel import TransliterationModel
+from .SentimentInfer import SentimentInfer
+from .SentimentTrainer import SentimentTrainer

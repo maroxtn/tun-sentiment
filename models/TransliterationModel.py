@@ -1,7 +1,29 @@
-"""Class that trains / loads transliteration model
-   And performs transliteration. It abstracts away
-   dealing with model.
+"""TransliterationModel class
+
+Trains / train and loads transliteration model, performs transliteration 
+in batches. Most hyper-parameters are customizable. 
+
+Load the dataset, train, and transliterate
+
+Example:
+
+    from models import TransliterationModel
+    from utils import load_transliteration_dataset
+
+
+    dataset, (known, known_idx) = load_transliteration_dataset()
+    transliterate_model = TransliterationModel(dataset, load_weights=False, known=known, known_idx=known_idx)
+
+    transliterate_model.train()
+    transliterate_model.transliterate_phrase("Chbik ya m3alem")
+    => شبيك يا معلم
+
+Todo:
+    * Include a notebook that runs everything (maybe on colab)
+    * Make sure inference has the same piple (preprocess -> clean -> infer)
+    
 """
+
 
 import re
 import logging
@@ -62,7 +84,7 @@ class TransliterationModel():
         self.known_idx = known_idx
 
         
-        assert checkpoint_folder in os.listdir() , f"Checkpoint folder :{checkpoint_folder}/ doesn't exist"
+        assert checkpoint_folder in os.listdir() + ["."] , f"Checkpoint folder :'{checkpoint_folder}' doesn't exist"
 
         #Compute max sequence length for input and output
         self.in_max = dataset.apply(lambda x: len(str(x.Arabize)), axis=1).max()
@@ -412,7 +434,7 @@ class TransliterationModel():
         return result
 
 
-    def transliterate_list(self, texts, step_size=200):
+    def transliterate_list(self, texts, step_size=200, progress_bar=True):
         """Transliterate a list of phrases into batches of word using greedy search, then join them together
 
            Args:
@@ -425,8 +447,12 @@ class TransliterationModel():
         if len(texts) < step_size:
             step_size = len(texts)
 
-        for i in tqdm(range(0, len(texts), step_size)): 
-            
+        if progress_bar:
+            iterator = tqdm(range(0, len(texts), step_size))
+        else:
+            iterator = range(0, len(texts), step_size)
+
+        for i in iterator: 
             
             out = self.transliterate_phrase(" lkrb3 ".join(texts[i:i+step_size]))
             splitted_sentences = [ex.strip() for ex in out.split(" " + self.transliterate_phrase("lkrb3") + " ")]
@@ -438,4 +464,3 @@ class TransliterationModel():
             results.extend(splitted_sentences)
 
         return results
-

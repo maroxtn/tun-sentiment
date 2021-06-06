@@ -1,3 +1,21 @@
+"""SentimentTrainer module
+
+Loads pretrained models by the SentimentTrainer class for inference.
+
+Example:
+
+    from models import SentimentInfer
+    from utils import load_sentiment_dataset
+
+    train, test = load_sentiment_dataset()
+
+    infer = SentimentInfer(folds=3, preprocess_function=lambda x:x, lang_prefix="en")
+    probs = infer.infer(test["text"], return_probs=True)
+    
+    test["labels"] = SentimentInfer.Probs2Values(probs)
+
+"""
+
 import os
 import yaml
 import torch

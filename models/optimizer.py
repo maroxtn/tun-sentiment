@@ -2,6 +2,8 @@ from set_seed import set_seed
 
 set_seed()
 
+"""https://nlp.seas.harvard.edu/2018/04/03/attention.html
+"""
 class NoamOpt:
     "Optim wrapper that implements rate."
     def __init__(self, model_size, factor, warmup, optimizer):

@@ -1,3 +1,21 @@
+"""SentimentTrainer module
+
+Trains a Sentiment Analysis n folds model.
+
+Example:
+
+    from model import SentimentTrainer
+    from utils import load_sentiment_dataset
+
+    #Very basic example , read the notes below on adding new language pretrained models
+    train, test = load_sentiment_dataset()
+    trainer = SentimentTrainer(train.text, train.labels, lambda x: x, "en", folds = 3)
+
+    losses = trainer.train_all()
+    print("\n".join([f"Fold {i} , Loss {val}" for i, val in enumerate(losses)]))
+
+"""
+
 import os
 import yaml
 import torch
