@@ -1,6 +1,6 @@
 # <b> Tunisian Arabizi Sentiment Analysis Zindi Competition (Ranked #1st): </b>
 
-This repo contains my approach in solving the Tunisian dialect sentiment analysis problem. My solution took place in [Tunisian Sentiment Analysis competition](http://ww.dzada.dz) in which I ranked the first before getting disqualified (for allegedly break a rule). Even after the competition ended, my solution scored the best by a significant margin on both public and private dataset.
+This repo contains my approach in solving the Tunisian dialect sentiment analysis problem. My solution took place in [Tunisian Sentiment Analysis competition](https://zindi.africa/competitions/ai4d-icompass-social-media-sentiment-analysis-for-tunisian-arabizi/) in which I ranked the first before getting disqualified (for allegedly break a rule). Even after the competition ended, my solution scored the best by a significant margin on both public and private dataset.
 
 The competition posed several challenges:
 
@@ -80,7 +80,6 @@ To reproduce my solution:
 $git clone maroxtn/tun-sentiment
 $cd tun-sentiment
 $pip install -r requirements.txt
-$mkdir checkpoint #Models would be saved here
 ```
 
 2- Train transliteration model
@@ -88,7 +87,19 @@ $mkdir checkpoint #Models would be saved here
 $python train_transliteration.py --epochs 100 --batch_size 32
 $python train_transliteration.py --help
 
-usage: train_transliteration.py [-h] [--epochs EPOCHS] [--batch_size BATCH_SIZE] [--d_model D_MODEL]                                                    [--save_folder SAVE_FOLDER] [--val_frac VAL_FRAC] [--dataset_dir DATASET_DIR]                                                                                                                                   Train the transliteration transformer model, if there is a model already trained, this command would replace it                                                                                                                                 optional arguments:                                                                                                       -h, --help            show this help message and exit                                                                   --epochs EPOCHS       Number for epochs. Default: 100                                                                   --batch_size BATCH_SIZE                                                                                                                       Batch size. Default: 32                                                                           --d_model D_MODEL     Transformer model dimension. Default 128                                                          --save_folder SAVE_FOLDER                                                                                                                     Folder to save model in. Default: `checkpoint`                                                    --val_frac VAL_FRAC   Fraction of that data that would constitute as the validation set. Default: 0.1                   --dataset_dir DATASET_DIR                                                                                                                     Transliteration dataset directory. Default: `data/external/transliteration` 
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --epochs EPOCHS       Number for epochs. Default: 100
+  --batch_size BATCH_SIZE
+                        Batch size. Default: 32
+  --d_model D_MODEL     Transformer model dimension. Default 128
+  --save_folder SAVE_FOLDER
+                        Folder to save model in. Default: `checkpoint`
+  --val_frac VAL_FRAC   Fraction of that data that would constitute as the validation set. Default: 0.1
+  --dataset_dir DATASET_DIR
+                        Transliteration dataset directory. Default: `data/external/transliteration`
+
 ```
 
 3 - Transliterate train and test data
