@@ -1,0 +1,1 @@
+`external` contains external datasets, `interim` is going to be used to store data generated during the execution, and `final` is going to store final predictions.
