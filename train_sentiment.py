@@ -53,7 +53,8 @@ def main():
     args = parser.parse_args()
     
 
-    train, test = load_sentiment_dataset(directory=args.dataset_dir, interim=True)
+    #TODO: Check here as well
+    train, test = load_sentiment_dataset(interim=True)
 
     #Load the appropriate sentences and preprocessing function depending on the language
     if args.lang_prefix == "en":

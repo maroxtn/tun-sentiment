@@ -42,8 +42,8 @@ def main():
     train, test = load_sentiment_dataset(interim=True)
 
 
-    enInfer = SentimentInfer(folds=args.ar_folds, preprocess_function=en_bert_preprocess, lang_prefix="en")
-    arInfer = SentimentInfer(folds=args.en_folds, preprocess_function=lambda x:x, lang_prefix="ar")
+    enInfer = SentimentInfer(folds=args.en_folds, preprocess_function=en_bert_preprocess, lang_prefix="en")
+    arInfer = SentimentInfer(folds=args.ar_folds, preprocess_function=lambda x:x, lang_prefix="ar")
 
     probs_en = enInfer.infer(test["text"], return_probs=True)
     probs_ar = arInfer.infer(test["text_arabic"], return_probs=True)
