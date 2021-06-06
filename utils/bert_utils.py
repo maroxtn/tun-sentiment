@@ -80,7 +80,7 @@ def load_sentiment_dataset(directory="data/external/sentiment_analysis/", interi
 
     else:
 
-        directory = directory.replace("eexternal", "interim")
+        directory = directory.replace("external", "interim")
 
         train = pd.read_csv(os.path.join(directory, "Train.csv"))
         test = pd.read_csv(os.path.join(directory, "Test.csv"))

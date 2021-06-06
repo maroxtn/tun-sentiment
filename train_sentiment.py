@@ -63,7 +63,7 @@ def main():
         fn = lambda x: x
         text = train.converted
 
-    models = SentimentTrainer(text, train.labels, fn, args.lang_prefix, args.folds, args.batch_size
+    models = SentimentTrainer(text, train.label, fn, args.lang_prefix, args.folds, args.batch_size
                     ,dropout=args.dropout, n_epochs=args.epochs, lr=args.lr, evaluate_step=args.evaluate_every
                     ,checkpoint_folder=args.save_folder, log_every=args.log_every)
 

@@ -45,8 +45,8 @@ def main():
     train["text_arabic"] = transliterate_model.transliterate_list(train.text)
     test["text_arabic"] = transliterate_model.transliterate_list(test.text)
 
-    train.to_csv("data/interim/train.csv")
-    test.to_csv("data/interim/test.csv")
+    train.to_csv("data/interim/Train.csv")
+    test.to_csv("data/interim/Test.csv")
 
 
 if  __name__ == "__main__":
