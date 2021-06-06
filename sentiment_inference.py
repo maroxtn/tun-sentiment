@@ -39,7 +39,7 @@ def main():
 
 
 
-    train, test = load_sentiment_dataset(iterim=True)
+    train, test = load_sentiment_dataset(interim=True)
 
 
     enInfer = SentimentInfer(folds=args.ar_folds, preprocess_function=en_bert_preprocess, lang_prefix="en")
@@ -55,7 +55,7 @@ def main():
     test["labels"] = predictedLabels
     test[["ID", "labels"]].to_csv("data/final/test.csv")
 
-    print("Produced file exported to data/final/test.csv")
+    print("Produced file exported to data/final/Test.csv")
 
 
 if  __name__ == "__main__":
