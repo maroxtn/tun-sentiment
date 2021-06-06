@@ -96,10 +96,8 @@ class SentimentTrainer():
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
             self.device = "cpu"
-        print(cpu)
-        print(self.device)
-        print(not cpu)
-        print(torch.cuda.is_available())
+
+        #TODO: Debug ^
         self.device = "cuda"
         #Load model name for the specified language from config yaml file
         model_names = yaml.load(open("model_names.yaml"), Loader=yaml.FullLoader)

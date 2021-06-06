@@ -74,7 +74,7 @@ class SentimentInfer:
         else:
             self.device = "cpu"
         
-
+        self.device = "cuda"
         self.models = [] 
 
         logging.info("Loading models ...")

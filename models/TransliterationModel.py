@@ -99,6 +99,8 @@ class TransliterationModel():
         else:
             self.device = "cpu"
 
+        self.device = "cuda"
+
         #Create the dictionary that maps each letter to it's corresponding embedding token
         #Input has one special token for padding
         in_tokens = set(" ".join(dataset.Arabize.values.tolist()).lower())
