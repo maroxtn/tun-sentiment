@@ -77,7 +77,7 @@ To reproduce my solution:
 1- Clone repo and install requirements
 
 ```
-$git clone maroxtn/tun-sentiment
+$git clone https://github.com/maroxtn/tun-sentiment.git
 $cd tun-sentiment
 $pip install -r requirements.txt
 ```
