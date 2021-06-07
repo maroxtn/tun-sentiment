@@ -26,6 +26,7 @@ from tqdm import tqdm
 import torch.nn.functional as F
 from torch.utils.data import TensorDataset, DataLoader, Dataset, Sampler, SequentialSampler
 from transformers import AutoTokenizer, AutoModel
+import numpy as np
 
 from utils import preprocessing_for_bert, get_indices
 from .bert_classifier import BertClassifier
@@ -74,7 +75,7 @@ class SentimentInfer:
         else:
             self.device = "cpu"
         
-        self.device = "cuda"
+        logging.info(f"DEVICE: {self.device}")
         self.models = [] 
 
         logging.info("Loading models ...")
@@ -159,8 +160,8 @@ class SentimentInfer:
         assert probs.shape[1] == 3 , "Shape of probs array should be (*, 3)"
         preds = probs.argmax(1)
 
-        preds = preds.where(preds == 2, 0)
-        preds = preds.where(preds == 0, -1)
+        preds = np.where(preds == 2, preds, 0)
+        preds = np.where(preds == 0, preds, -1)
         
         return preds
 

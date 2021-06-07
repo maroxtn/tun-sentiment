@@ -16,27 +16,28 @@ The competition posed several challenges:
 
 ## My solution
 
-Due to the small size of the dataset it would deem impractical to train a model from scratch; it would be hard for a model to learn a language with as many specific cases as Tunisian with a dataset only containing 70k sentences. Appropriately, using a pretrained model seems like the natural solution. 
+Due to the small size of the dataset it would deem impractical to train a model from scratch; it would be hard for a model to learn a language with as many specific cases as Tunisian with a dataset only containing 70k sentences. Appropriately, using a pretrained model seemed like the natural solution. 
 
-If we analyze the Tunisian dialect, we would find that it is a melting pot of many language: Arabic by a big margin (root of words, grammar, etc ...), Amazigh words (which is shared among all Maghrebi dialects), French (also shared with some Maghrebi dialects), and to a certain extent some English and Italian.
+If we analyze the Tunisian dialect, we would find that it is a melting pot of many languages: Arabic by a big margin (root of words, grammar, etc ...), Amazigh words (which is shared among all Maghrebi dialects), French (also shared with some Maghrebi dialects), and to a certain extent some English and Italian.
 
-Because of this diversity, using an ensemble of multiple languages trained on the same dataset would surely yield higher accuracy. But how is it possible to take advantage of Arabic pretrained model and the dataset is in latin letters, one might ask. 
+Because of this diversity, using an ensemble of multiple pretrained language models fine-tuned on the same dataset would surely yield higher accuracy since every model would contribute to the language understanding by a bit. But how is it possible to take advantage of Arabic pretrained model and the dataset is in latin letters, one might ask. 
 
 For that reason, I trained an independent transformer model for transliterating from Latin letters to Tunisian using a dataset that I personally harvested and annotated. This dataset contains around 17k commonly used Tunisian words in both Arabic letters and Arabizi. More on the dataset later.
 
-After trying several pretrained models from the huggingface hub, and through lots trial and error, I determined that the combination of `bert-base-uncased`, alongside with `moha/arabert_c19` (multi-dialect Arabic model trained on 1.5M COVID19 tweets, paper: [https://arxiv.org/pdf/2105.03143.pdf](https://arxiv.org/pdf/2105.03143.pdf)) and `camembert` gave the best results. However camembert didn't improve accuracy that much, so I am not using it in this project for less computation time.
+After trying several pretrained models from the huggingface hub, and through lots trial and error, I determined that the combination of `bert-base-uncased`, alongside with `moha/arabert_c19` (multi-dialect Arabic model trained on 1.5M COVID19 tweets, paper: [https://arxiv.org/pdf/2105.03143.pdf](https://arxiv.org/pdf/2105.03143.pdf)) and `camembert` gave the best results. However, Camembert's contribution to the ensemble was not significant: I disposed of it in favor of the other two models for the sake of less training time.
 
-I believe that the ensemble of both `bert-base-uncased` and `moha/arabert_c19` is the most optimal because the latter covers all of the words that has Arabic / Amazigh origins (it was trained on a multi-dialectal Arabic, meaning it has inherent understanding for other Maghrebi languages), and bert model covers English, French and even Italian roots (bert-base was trained on wikipedia English which still contains a lot of forein words text). So in that sense, this ensemble would have a more thorough understanding with a reasonable computation time (Training only takes 3h30 on P100, inference for 30k sentences only 2 minutes on the same hardware).
+I believe that the ensemble of both `bert-base-uncased` and `moha/arabert_c19` was the most optimal choice. The latter model covers all of the words that has Arabic / Amazigh origins (it was trained on a multi-dialectal Arabic, meaning it has an inherent understanding for other Maghrebi languages), and bert model covers English, French and even Italian roots (bert-base was trained on wikipedia English which still contains a lot of foreign words text). So in that sense, this ensemble would have a more thorough understanding with a reasonable computation time (Training only takes 3h30 on P100, inference for 30k sentences only 2 minutes on the same hardware).
 
-To tackle the small dataset problem, I used cross validation of 10 folds for arabert and 5 folds bert-base, then averaged the output of every fold. This helped me stabilize the score against any form of overfitting.
+To tackle the small dataset problem, I used cross validation of 10 folds for Arabert and 5 folds Bert-base, then averaged the output of every fold. This helped me stabilize the score against any form of overfitting.
 
 
 ## Arabic to Arabizi dataset
 
-To create this dataset, I scraped off 25k facebook comments, took the 30k most common words but I only annotated 17k words because of time constraints. This dataset covered 60% of the words that existed in the sentiment analysis dataset.
+To create this dataset, I scraped off 25k facebook comments, filtered the 30k most common words but I only annotated the 17k first words due to time constraints. This dataset covered 60% of the words that existed in the sentiment analysis dataset.
 
 Note that many of these words are just misspellings of the same word repeating over and over. For example the word Mashallah is spelled machalah, mashalah, machala, macha2allah ....
 
+The dataset can be found in `data/external/transliteration/dataset.csv`.
 
 ## Transliteration model
 
@@ -57,35 +58,35 @@ With a more thorough hyper-parameter search, model performance would surely impr
 
 One of the keys of the success of my models is dataloading speed. Since the competition training time is limited to 9 hours, and since bert models are infamous for slow computation, optimizing training speed is crucial. For that reason I created a custom <i>data_collator*</i> and a custom sampler.
 
-A <i> data_collator</i> is a function that is a callback function used by pytorch dataloaders, it gets called after batch creation before turning it into a pytorch tensor. It is useful in this context because it helps us pad input sequences the maxlen of the current batch instead of the maxlen of the entire dataset.
+A <i> data_collator</i> is a callback function used by pytorch dataloaders, it gets called after batch creation before turning the batch into a pytorch Tensor. It is useful in this context because it helps us pad input sequences the maxlen of the current batch instead of the maxlen of the entire dataset.
 
-For example, let's assume we have a dataset of 10k sentences, and the longest has 300 tokens. Using hugggingface bert preprocessing function, all the sentences in the dataset would be padded up to 300 tokens. This loses us precious computation time. Using a data_collator would allow us to pad sentences to the maximum length of only the batch, not the entire dataset, thus gaining us time. The custom data collator can be found in both `dataloader/bert_dataloader` and `dataloader/transliteration_dataloader.py`.
+For example, let's assume we have a dataset of 10k sentences, and the longest has 300 tokens. Using hugggingface bert preprocessing function, all the sentences in the dataset would be padded up to 300 tokens. This is a waste of precious computation time. Using a data_collator would allow us to pad sentences to the maximum length of only the batch, not the entire dataset, thus gaining us time. The custom data collator source can be found in both `dataloader/bert_dataloader.y` and `dataloader/transliteration_dataloader.py`.
 
-Custom samplers were also used to reduce the amount of padding in a batch. This custom sampler makes batches similar in length, so when they are padded to its max length, padding is minimal. Code for my custom sampler can be found in `dataloader/custom_sampler.py`.
+Custom samplers were also used to reduce the amount of padding in a batch. This custom sampler samples batches similar in length together, so when they are padded to its max length, padding is minimal. Code for my custom sampler can be found in `dataloader/custom_sampler.py`.
 
-Using two of these tricks took me from 3 hours of training a model to only 15 minutes, which is quite impressive.
+Using these two tricks reduced the training time of a single Bert fold from 2 hours to 15 minutes which is quite impressive.
 
 
 # Use guide
 
-Contains four folders: models (contains the classes of each model used and their inference code), utils (utility functions), dataloader (dataloading code), and Data (contains both competition dataset and my personal dataset)
+The project contains four folders: models (contains the classes of each model used and their inference code), utils (utility functions), dataloader (dataloading code), and Data (contains both competition dataset and my Arabizi to Arabic dataset)
 
-For the sake of convenience, I added a jupyter notebook which contains the original code of my solution since it might be easier reading it in an interactive notebook, however mind that it is messy and not documented.
+For the sake of convenience, I have added a jupyter notebook which contains the original code of my solution since it might be easier reading it in an interactive notebook. However mind that it is not as organized and documented as the code in the python files.
 
-To reproduce my solution:
+The code is fully modular and documented, I tried to make it as readable as possible. To reproduce my solution:
 
 1- Clone repo and install requirements
 
 ```
-$git clone https://github.com/maroxtn/tun-sentiment.git
-$cd tun-sentiment
-$pip install -r requirements.txt
+$ git clone https://github.com/maroxtn/tun-sentiment.git
+$ cd tun-sentiment
+$ pip install -r requirements.txt
 ```
 
 2- Train transliteration model
 ```
-$python train_transliteration.py --epochs 100 --batch_size 32
-$python train_transliteration.py --help
+$ python train_transliteration.py --epochs 100 --batch_size 32
+$ python train_transliteration.py --help
 
 
 optional arguments:
@@ -105,8 +106,8 @@ optional arguments:
 3 - Transliterate train and test data
 
 ```
-$python transliteration_inference.py
-$python transliteration_inference.py --help
+$ python transliteration_inference.py
+$ python transliteration_inference.py --help
 
 
 Transliterate sentences in data/external/['train', 'test'].csv to data/interim/['train', 'test'].csv. No arguments
@@ -120,9 +121,9 @@ optional arguments:
 4 - Train sentiment analysis model, both Bert and Arabert
 
 ```
-$python train_sentiment.py en --epochs 4 --batch_size 32   #bert-base
-$python train_sentiment.py ar --epochs 4 --batch_size 32 --folds 10   #arabert
-$python train_sentiment.py --help
+$ python train_sentiment.py en --epochs 4 --batch_size 32   #bert-base
+$ python train_sentiment.py ar --epochs 4 --batch_size 32 --folds 10   #arabert
+$ python train_sentiment.py --help
 
 usage: train_sentiment.py [-h] [--epochs EPOCHS] [--batch_size BATCH_SIZE] [--evaluate_every EVALUATE_EVERY]
                           [--save_folder SAVE_FOLDER] [--folds FOLDS] [--dropout DROPOUT] [--lr LR]
@@ -157,8 +158,8 @@ optional arguments:
 5 - Perform inference on the dataset
 
 ```
-$python sentiment_inference.py --ar_folds 10 --en_folds 5
-$python sentiment_inference.py --help
+$ python sentiment_inference.py --ar_folds 10 --en_folds 5
+$ python sentiment_inference.py --help
 
 usage: sentiment_inference.py [-h] [--ar_folds AR_FOLDS] [--en_folds EN_FOLDS]
 
@@ -173,14 +174,14 @@ optional arguments:
 
 Output will be stored as `data\final\Test.csv`.
 
-If you wish to have code in front of you rather than CLI, then `sentimentAnalysis.py` does exactly the same thing as the commands above.
+If you wish to have code in front of you rather than CLI, then `sentimentAnalysis.py` does exactly the same thing as all the commands above.
 
 ---
 
 ## Final thoughts on what might improve accuracy
 
-After everything I tried, there were few things that I did that significantly improved accuracy. First of them is a bigger transliteration dataset, the bigger the dataset for transliteration, the better the accuracy.
+After everything I tried, there were few things I did that significantly improved accuracy. First of them is a bigger transliteration dataset: the bigger and the better the dataset for transliteration, the more the accuracy improved for me. Knowing that, I believe that a bigger and a higher quality dataset would surely improve the score. 
 
-Knowing that, I believe that a bigger and a higher quality dataset would surely improve the score. Also a transliteration model that is trained on whole sentences rather than standalone words would be more precise since it would deal with ambiguous words better. Also we might replace common French words that we use in Tunisian with their Arabic translation, that way, we can better hone the knowledge of pretrained Arabic models.
+Also a transliteration model that is trained on whole sentences rather than standalone words would be more precise since it would deal with ambiguous words better. We might as well replace common French words that we use in Tunisian with their Arabic translation, that way, we can better hone the knowledge of the pretrained Arabic models.
 
-I also believe that once we have a big enough Tunisian dialect dataset, we can train a BERT model then fine-tune it on such tasks and it would out-perform all other methods.
+All of these are ways to improve language understanding of Tunisian dialect, and to deal with the scarcity of data, however I strongly believe that once we have a big enough Tunisian dialect dataset, we can train a BERT model then fine-tune it on such tasks and it would out-perform all other methods.

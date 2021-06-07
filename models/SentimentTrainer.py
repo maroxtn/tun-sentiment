@@ -97,8 +97,8 @@ class SentimentTrainer():
         else:
             self.device = "cpu"
 
-        #TODO: Debug ^
-        self.device = "cuda"
+        logging.info(f"DEVICE: {self.device}")
+
         #Load model name for the specified language from config yaml file
         model_names = yaml.load(open("model_names.yaml"), Loader=yaml.FullLoader)
         self.model_name = model_names["model_name_" + lang]
@@ -226,7 +226,6 @@ class SentimentTrainer():
                 if step%self.evaluate_step == 0 and step != 0 and epoch_i != 0 and epoch_i != 1: #Only start evaluating every 200 steps after the second epoch
                     
                     logging.info("-"*70)
-
                     if evaluation == True:
 
                         val_loss, val_accuracy = self.evaluate(model, val_dataloader, loss_fn)
@@ -236,7 +235,6 @@ class SentimentTrainer():
                             torch.save(model, os.path.join(self.checkpoint_folder, prefix+"_best_"+str(fold)))
                             logging.info("new max")
                             
-
                         logging.info(val_accuracy)
                         
                         logging.info("-"*70)

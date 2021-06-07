@@ -54,9 +54,7 @@ def main():
     #Export predicted data
     test["labels"] = predictedLabels
     test[["ID", "labels"]].to_csv("data/final/test.csv")
-
-    print("Produced file exported to data/final/Test.csv")
-
+    
 
 if  __name__ == "__main__":
     main()

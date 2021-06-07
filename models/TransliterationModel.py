@@ -99,7 +99,7 @@ class TransliterationModel():
         else:
             self.device = "cpu"
 
-        self.device = "cuda"
+        logging.info(f"DEVICE: {self.device}")
 
         #Create the dictionary that maps each letter to it's corresponding embedding token
         #Input has one special token for padding

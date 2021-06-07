@@ -38,8 +38,8 @@ def main():
     sentiment_train["text_arabic"] = transliterate_model.transliterate_list(sentiment_train.text)
     sentiment_test["text_arabic"] = transliterate_model.transliterate_list(sentiment_test.text)
 
-    sentiment_train.to_csv("data/interim/train.csv")
-    sentiment_test.to_csv("data/interim/test.csv")
+    sentiment_train.to_csv("data/interim/Train.csv")
+    sentiment_test.to_csv("data/interim/Test.csv")
 
     logging.info("Converted Arabizi dataset into Arabic script")
 
