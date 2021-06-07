@@ -28,7 +28,7 @@ def main():
     dataset, (known, known_idx) = load_transliteration_dataset()
     transliterate_model = TransliterationModel(dataset, load_weights=False, known=known, known_idx=known_idx)
 
-    transliterate_model.train()
+    transliterate_model.train_model()
 
 
 
@@ -46,7 +46,7 @@ def main():
 
 
     #Fine tune models
-    en_model = SentimentTrainer(sentiment_train.text, sentiment_train.labels, en_bert_preprocess, "en")
+    en_model = SentimentTrainer(sentiment_train.text, sentiment_train.label, en_bert_preprocess, "en")
     en_losses = en_model.train_all()
 
     logging.info(f"\n\n\nBert-base training is done")
@@ -62,7 +62,7 @@ def main():
     arInfer = SentimentInfer(folds=5, preprocess_function=lambda x:x, lang_prefix="ar")
 
     probs_en = enInfer.infer(sentiment_test["text"], return_probs=True)
-    probs_ar = arInfer.infer(sentiment_test["converted"], return_probs=True)
+    probs_ar = arInfer.infer(sentiment_test["text_arabic"], return_probs=True)
 
     probs = probs_en+probs_ar*1.30
     predictedLabels = SentimentInfer.Probs2Values(probs)

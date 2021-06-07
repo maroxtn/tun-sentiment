@@ -160,8 +160,8 @@ class SentimentInfer:
         assert probs.shape[1] == 3 , "Shape of probs array should be (*, 3)"
         preds = probs.argmax(1)
 
-        preds = np.where(preds == 2, preds, 0)
-        preds = np.where(preds == 0, preds, -1)
+        preds = np.where(preds != 0, preds, -1)
+        preds = np.where(preds != 2, preds, 0)
         
         return preds
 
