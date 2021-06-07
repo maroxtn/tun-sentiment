@@ -4,5 +4,5 @@ __pycache__/
 models/__pycache__/
 dataloader/__pycache__/
 utils/__pycache__/
-data/interim/Test.csv/
-data/interim/Train.csv/
+data/interim/Test.csv
+data/interim/Train.csv
