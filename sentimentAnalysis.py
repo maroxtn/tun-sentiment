@@ -52,14 +52,14 @@ def main():
     logging.info(f"\n\n\nBert-base training is done")
     logging.info(f"Losses: {str(en_losses)}\n\n\n")
 
-    ar_model = SentimentTrainer(sentiment_train.text_arabic, sentiment_train.labels, lambda x:x, "ar")
+    ar_model = SentimentTrainer(sentiment_train.text_arabic, sentiment_train.labels, lambda x:x, "ar", folds=10)
     ar_model = ar_model.train_all()   
 
 
 
     #Perform inference
     enInfer = SentimentInfer(folds=5, preprocess_function=en_bert_preprocess, lang_prefix="en")
-    arInfer = SentimentInfer(folds=5, preprocess_function=lambda x:x, lang_prefix="ar")
+    arInfer = SentimentInfer(folds=10, preprocess_function=lambda x:x, lang_prefix="ar")
 
     probs_en = enInfer.infer(sentiment_test["text"], return_probs=True)
     probs_ar = arInfer.infer(sentiment_test["text_arabic"], return_probs=True)
@@ -71,7 +71,7 @@ def main():
 
     #Export predicted data
     sentiment_test["labels"] = predictedLabels
-    sentiment_test[["ID", "labels"]].to_csv("data/final/test.csv")
+    sentiment_test[["ID", "labels"]].to_csv("data/final/test.csv", index=False)
 
 if  __name__ == "__main__":
     main()

@@ -53,7 +53,7 @@ def main():
 
     #Export predicted data
     test["labels"] = predictedLabels
-    test[["ID", "labels"]].to_csv("data/final/test.csv")
+    test[["ID", "labels"]].to_csv("data/final/test.csv", index=False)
     
 
 if  __name__ == "__main__":

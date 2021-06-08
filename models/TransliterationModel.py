@@ -287,7 +287,7 @@ class TransliterationModel():
         logging.info("Training done, best loss %f" % (min_loss))
         logging.info("="*20)
 
-        self.model = torch.load(self.checkpoint_folder + "/transliterate")
+        self.model = torch.load(self.checkpoint_folder + "/transliterate").eval()
 
 
     def preprocess_text(self, text):
